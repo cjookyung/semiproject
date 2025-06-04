@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello, SemiProject!!</title>
-</head>
-<body>
-    <h1>Hello, SemiProject</h1>
-    <img src="images/moto.png" class="img-fluid">
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
 
-</body>
+<th:block layout:fragment="content">
+    <main id="content">
+        <img src="images/moto.png" class="img-fluid">
+    </main>
+</th:block>
+
 </html>
