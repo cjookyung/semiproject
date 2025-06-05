@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS members (
+    mno SERIAL PRIMARY KEY,
+    userid VARCHAR(18) UNIQUE NOT NULL,
+    passwd VARCHAR(64) NOT NULL,
+    name   VARCHAR(50) NOT NULL,
+    email  VARCHAR(100) NOT NULL,
+    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE IF NOT EXISTS boards (
+    bno SERIAL PRIMARY KEY,
+    title VARCHAR(128) NOT NULL,
+    userid VARCHAR(18) NOT NULL,
+    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    thumbs  INTEGER DEFAULT 0,
+    views   INTEGER DEFAULT 0,
+    contents TEXT NOT NULL,
+    FOREIGN KEY (userid) REFERENCES members(userid)
+    );

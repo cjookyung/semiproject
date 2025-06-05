@@ -1,0 +1,15 @@
+@charset "UTF-8";
+.error-message {
+    color: #dc3545;
+    font-size: 0.95em;
+    margin: 10px 0;
+    /*display: none;*/
+}
+
+#joinfrm, #loginfrm, #myinfo {
+    max-width: 450px;
+    margin: 100px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    border-radius: 8px;
+}

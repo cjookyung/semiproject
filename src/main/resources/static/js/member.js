@@ -133,9 +133,8 @@ const submitLoginfrm = async (frm, token, headerName) => {
     //frm.passwd.value = await hashPassword(frm.passwd.value);
     const formData = new FormData(frm);
 
-    fetch('/member/login', {
+    fetch('api/v1/member/login', {
         method: 'POST',
-        headers: { [headerName]: token },
         body: formData
     }).then(async response => {
         if (response.ok) { // 로그인이 성공했다면
