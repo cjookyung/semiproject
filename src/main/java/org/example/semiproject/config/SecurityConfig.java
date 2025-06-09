@@ -4,68 +4,60 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration // 해당 클래스가 스프링의 설정 클래스임을 명시
-@EnableWebSecurity // Spring Security를 활성화시키는 어노테이션
-@RequiredArgsConstructor // final이나 @NonNull이 붙은 필드에 대해 생성자 자동 생성
+@Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    /**
-     * SecurityFilterChain 빈 등록
-     * - 스프링 시큐리티의 각종 보안 규칙(인증, 인가 등)을 필터 체인 형태로 적용
-     * - HttpSecurity를 통해 다양한 보안 설정을 추가할 수 있음
-     *
-     * @param http HttpSecurity 객체(Spring Security의 보안 설정 API)
-     * @return SecurityFilterChain 객체 (설정된 보안 필터 체인)
-     * @throws Exception 예외 발생 시
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API용)
+                // CSRF(Cross-Site Request Forgery) 보호 기능 비활성화
+                // REST API, 혹은 CSRF 토큰을 사용하지 않는 경우 disable
+                .csrf(csrf -> csrf.disable())
+
+                // 요청 인가(Authorization) 규칙 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/board/list").hasRole("ADMIN") // 관리자 권한 필요
-                        .requestMatchers("/member/logout").hasRole("USER") // 인증 필요
-                        .anyRequest().permitAll() // 그 외는 모두 허용
+                        // 지정된 경로들에는 누구나 접근 허용 (회원가입, 로그인, 정적자원 등)
+                        .requestMatchers(
+                                "/",                                 // 메인 페이지
+                                "/member/join", "/member/login",     // 회원가입, 로그인 페이지
+                                "/api/v1/member/join",               // API 회원가입
+                                "/api/v1/member/login",              // API 로그인
+                                "/css/**", "/js/**", "/images/**"    // 정적 리소스(css, js, 이미지)
+                        ).permitAll()
+                        // 그 외 모든 요청은 인증 필요
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> httpBasic.realmName("HttpBasic")); // HTTP Basic 인증 활성화
+
+                // 폼 로그인(Form Login) 설정
+                .formLogin(form -> form
+                        .loginPage("/member/login")         // 사용자 정의 로그인 페이지 경로
+                        .loginProcessingUrl("/member/login")// 로그인 form action URL (Spring이 처리)
+                        .usernameParameter("userid")        // 로그인 form의 아이디 필드 name
+                        .passwordParameter("passwd")        // 로그인 form의 비밀번호 필드 name
+                        .defaultSuccessUrl("/", true)       // 로그인 성공 시 이동할 경로 (항상 메인으로 이동)
+                        .failureUrl("/member/login?error")  // 로그인 실패 시 이동할 경로
+                        .permitAll()                        // 로그인 관련 경로는 모두 접근 허용
+                )
+
+                // 로그아웃(Logout) 설정
+                .logout(logout -> logout
+                        .logoutUrl("/member/logout")        // 로그아웃 요청 경로
+                        .logoutSuccessUrl("/")              // 로그아웃 성공 후 리다이렉트 경로
+                        .invalidateHttpSession(true)        // 로그아웃 시 세션 무효화
+                        .deleteCookies("JSESSIONID")        // JSESSIONID 쿠키 삭제
+                );
+        // 최종적으로 SecurityFilterChain 객체 반환 (설정 완료)
         return http.build();
     }
 
-    // UserDetailsService 빈 등록: 사용자 정보를 메모리에서 관리하는 서비스
-    @Bean
-    public UserDetailsService userDetailsService() {
-        // 일반 사용자 계정 생성: username = "user", password = "user123", 권한 = "USER"
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder().encode("user123")) // 비밀번호는 암호화 필요
-                .roles("USER")
-                .build();
 
-        // 관리자 계정 생성: username = "admin", password = "admin123", 권한 = "USER", "ADMIN"
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin123"))
-                .roles("USER", "ADMIN")
-                .build();
-
-        // 위에서 만든 두 계정 정보를 InMemoryUserDetailsManager에 등록 (메모리 기반 사용자 관리)
-        return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    // PasswordEncoder 빈 등록: 비밀번호를 암호화하기 위한 인코더(Bcrypt 알고리즘 사용)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

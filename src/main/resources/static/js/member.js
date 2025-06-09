@@ -158,12 +158,15 @@ const submitLoginfrm = async (frm, token, headerName) => {
     // reCAPTCHA 토큰 추가
     formData.append('recaptchaToken', response);
 
-    fetch('/api/v1/member/login', {
+    //fetch('/api/v1/member/login', { //security에서는 필요 없음
+    fetch('/member/login', { //security에서 자동 처리
         method: 'POST',
         body: formData
     }).then(async response => {
         if (response.ok) { // 로그인이 성공했다면
-            alert(await response.text());
+            // alert(await response.text()); //security에서는 필요 없음
+            // location.href = '/member/myinfo';
+            alert('로그인에 성공하였습니다');
             location.href = '/member/myinfo';
         } else if (response.status === 400) {
             alert(await response.text());

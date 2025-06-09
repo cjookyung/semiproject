@@ -5,6 +5,7 @@ import org.example.semiproject.member.domain.Member;
 import org.example.semiproject.member.domain.dto.LoginDTO;
 import org.example.semiproject.member.domain.dto.MemberDTO;
 import org.example.semiproject.member.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public boolean newMember(MemberDTO member) {
 
@@ -24,6 +26,9 @@ public class MemberServiceImpl implements MemberService {
         if (memberMapper.countByEmail(member.getEmail()) > 0) {
             throw new IllegalStateException("이미 존재하는 이메일입니다!!");
         }
+
+        //비밀번호 암호화
+        member.setPasswd(passwordEncoder.encode(member.getPasswd()));
 
         int result = memberMapper.insertMember(member);
         return result == 1;  // 회원정보가 테이블 저장되었는지 여부에 따라
