@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<th:block layout:fragment="css">
+    <link href="/css/board.css" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="content">
+    <main id="content">
+        <h2>게시판</h2>
+        <table class="table table-striped">
+            <colgroup>
+                <col style="width:7%">
+                <col style="" class="truncate">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:7%">
+                <col style="width:7%">
+            </colgroup>
+
+            <thead>
+            <tr>
+                <td colspan="3" class="text-start">
+                    <div class="d-flex align-items-center gap-3">
+                        <select class="form-select" style="width: 120px" id="findtype" name="findtype">
+                            <option value="title" selected>제목</option>
+                            <option value="userid">작성자</option>
+                            <option value="contents">내용</option></select>
+                        <input class="form-control" style="width: 250px" id="findkey" name="findkey">
+                        <button class="btn btn-success" id="findbtn"><i class="fa-solid fa-magnifying-glass"></i> 검색</button>
+                    </div>
+                </td>
+                <td colspan="3"  class="text-end">
+                    <button type="button" class="btn btn-primary" id="newbdbtn">
+                        <i class="fas fa-pen"></i> 글쓰기</button>
+                </td>
+            </tr>
+            <tr class="table-light">
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>추천</th>
+                <th>조회</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="bd : ${bds}">
+                <td th:text="${bd.bno}"></td>
+                <td><a th:href="|/board/view?bno=${bd.bno}|" th:text="${bd.title}"></a></td>
+                <td th:text="${bd.userid}"></td>
+                <td th:text="${#strings.substring(bd.regdate,0,10)}"></td>
+                <td th:text="${bd.thumbs}"></td>
+                <td th:text="${bd.views}"></td>
+            </tr>
+            </tbody>
+
+            <tfoot>
+            <tr><td colspan="6">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${cpg gt 10}">
+                        <a th:href="|/board/list?cpg=${cpg - 1}|" class="page-link">이전</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(stblk, stblk+9)}">
+                    <li class="page-item">
+                        <a th:href="|/board/list?cpg=${i}|"
+                           th:class="${cpg == i} ? 'page-link active':'page-link'"
+                           th:text="${i}">1</a>
+                    </li>
+                    </th:block>
+
+                    <li class="page-item">
+                        <a th:href="|/board/list?cpg=${cpg + 1}|" class="page-link">다음</a></li>
+                </ul>
+            </td></tr>
+            </tfoot>
+        </table>
+    </main>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script src="/js/board.js"></script>
+</th:block>
+
+</html>

@@ -91,8 +91,22 @@ const submitJoinfrm = async (frm) => {
     //frm.passwd.value = await hashPassword(frm.passwd.value);
     //console.log(frm.passwd.value);
 
+    // 캡챠 확인
+    let response = grecaptcha.getResponse();
+    if(response.length == 0) {
+        alert('자동가입 방지 확인하세요!!');
+        return false;
+    }
+    console.log(response);
+
     // 폼에 입력된 데이터를 formData 객체로 초기화
     const formData = new FormData(frm);
+
+    // reCAPTCHA 토큰 추가
+    formData.append('recaptchaToken', response);
+
+    // 폼 데이터 확인
+    console.log(formData);
 
     fetch('/api/v1/member/join', {
         method: 'POST',
@@ -131,16 +145,27 @@ const validLogin = (form) => {
 // 로그인 폼 제출
 const submitLoginfrm = async (frm, token, headerName) => {
     //frm.passwd.value = await hashPassword(frm.passwd.value);
+
+    // 캡챠 확인
+    let response = grecaptcha.getResponse();
+    if(response.length == 0) {
+        alert('자동가입 방지 확인하세요!!');
+        return false;
+    }
+
     const formData = new FormData(frm);
 
-    fetch('api/v1/member/login', {
+    // reCAPTCHA 토큰 추가
+    formData.append('recaptchaToken', response);
+
+    fetch('/api/v1/member/login', {
         method: 'POST',
         body: formData
     }).then(async response => {
         if (response.ok) { // 로그인이 성공했다면
             alert(await response.text());
             location.href = '/member/myinfo';
-        } else if (response.status === 401) {
+        } else if (response.status === 400) {
             alert(await response.text());
         } else { // 로그인이 실패했다면
             alert('로그인에 실패했습니다!! 다시 시도해 주세요!');

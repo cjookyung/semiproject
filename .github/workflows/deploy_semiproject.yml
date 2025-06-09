@@ -4,10 +4,10 @@ on:
   workflow_dispatch
 
 env:
-  DOCKER_USERNAME: cjookyung
+  DOCKER_USERNAME: siestageek
   IMAGE_NAME: semiproject
   IMAGE_TAG: v${{ github.run_number }}
-  HOSTNAME: 192.168.20.128
+  HOSTNAME: 13.125.218.128
   USERNAME: ubuntu
 
 jobs:
@@ -86,12 +86,12 @@ jobs:
           host: ${{ env.HOSTNAME }}
           username: ${{ env.USERNAME }}
           key: ${{ secrets.EC2_PRIVATEKEY }}
-          port: 22
+          port: 12137
           script: |
-            docker compose -f ./compose-semiproejct.yaml down  
-            docker image rm -f cjookyung/semiproject
-            docker compose -f ./compose-semiproejct.yaml up -d
+            docker compose -f ./compose-semiproject.yaml down  
+            docker image rm -f siestageek/semiproject
+            docker compose -f ./compose-semiproject.yaml up -d
             sleep 15
             
-            docker compose -f ./compose-semiproejct.yaml ps
-            docker compose -f ./compose-semiproejct.yaml logs
+            docker compose -f ./compose-semiproject.yaml ps
+            docker compose -f ./compose-semiproject.yaml logs

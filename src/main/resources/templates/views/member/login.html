@@ -5,6 +5,7 @@
 
 <th:block layout:fragment="css">
     <link href="/css/member.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -21,6 +22,10 @@
                 <input type="password" name="passwd" id="passwd"
                        class="form-control" required placeholder="비밀번호">
                 <label for="passwd" class="form-label">비밀번호</label>
+            </div>
+
+            <div class="my-2 d-flex justify-content-center">
+                <div class="g-recaptcha" th:data-sitekey="${sitekey}"></div>
             </div>
 
             <div class="d-flex justify-content-center my-2 gap-2">

@@ -24,4 +24,3 @@ ENV SERVER_PORT=8080
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-Xms512m", "-Xmx512m", "-jar", "app.jar"]
-

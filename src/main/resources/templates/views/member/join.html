@@ -19,6 +19,7 @@
             border-radius: 8px;
         }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <th:block layout:fragment="content">
@@ -57,7 +58,7 @@
             </div>
 
             <div class="my-2 d-flex justify-content-center">
-                <img src="/images/moto.png">
+                <div class="g-recaptcha" th:data-sitekey="${sitekey}"></div>
             </div>
 
             <div class="my-2 d-flex justify-content-between">

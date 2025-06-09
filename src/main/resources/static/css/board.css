@@ -1,0 +1,38 @@
+.table {
+    max-width: 1050px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+#boardfrm {
+    max-width: 750px;
+    margin: 100px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    border-radius: 8px;
+}
+
+a:link { text-decoration: none; }
+a:active { text-decoration: underline; color: orange; }
+
+.vtit {
+    height: 100px; border-bottom: 3px solid black;
+    background: #dff0f8; font-size: 32px; text-align: center;
+}
+
+.vinfo { height: 35px; background: #ccff99; }
+.vinfo td { padding: 5px }
+
+.vcont {
+    height: 500px; border-bottom: 3px solid black;
+    background: #ffffcc; padding: 5px; vertical-align: top;
+}
+
+.cmtbg { background: yellow; padding: 5px; }
+
+.rpybg { background: lime; padding: 5px; }
+
+.reply-border { border-top: 2px solid silver;
+    border-bottom:2px solid silver }
+
+.pushend { float: right }
