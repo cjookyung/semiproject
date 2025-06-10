@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<head>
+    <style>
+        /* gallery view */
+        .vtit {
+            height: 100px; border-bottom: 3px solid black;
+            background: #dff0f8 !important; font-size: 32px; text-align: center;
+        }
+
+        .vinfo { height: 35px; background: #ccff99 !important; }
+        .vinfo td { padding: 5px }
+
+        .vcont {
+            height: 500px; border-bottom: 3px solid black;
+            background: #ffffcc !important; padding: 5px; vertical-align: top;
+        }
+
+        .pre { white-space: pre-wrap } /*본문글 줄바꿈 표시*/
+    </style>
+</head>
+
+<th:block layout:fragment="content">
+    <main id="content">
+        <h2><i class="fa-solid fa-image"></i> 이미지 갤러리 본문글</h2>
+        <div class="row offset-1 col-10 my-3">
+            <table class="table">
+                <thead><tr><td>
+                    <button type="button" class="btn btn-light">
+                        이전게시물</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-light">
+                        다음게시물</button></td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-primary" id="newbdbtn">
+                            새글쓰기</button></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr><th class="vtit" colspan="2">제목</th></tr>
+
+                <tr><td class="vinfo">작성자</td>
+                    <td class="text-end vinfo">작성일/추천/조회</td></tr>
+
+                <tr>
+                    <td class="vcont" colspan="2">
+
+                        <img src="/images/cowmeat01.jpg" class="img-fluid">
+                        <img src="/images/cowmeat02.jpg" class="img-fluid">
+                        <img src="/images/cowmeat03.jpg" class="img-fluid">
+
+                        <th:block>
+                            <div class="bg-light">cowmeat01.jpg (1024kb)</div>
+                            <div class="bg-light">cowmeat02.jpg (2048kb)</div>
+                            <div class="bg-light">cowmeat03.jpg (3096kb)</div>
+                        </th:block>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot><tr><td>
+                    <button type="button" class="btn btn-warning">
+                        수정하기</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-danger" id="rmvbdbtn">
+                        삭제하기</button></td>
+                    <td class="text-end"><button type="button" class="btn btn-light" id="lstbdbtn">
+                        목록으로</button></td>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </main>
+
+</th:block>
+
+<th:block layout:fragment="script">
+    <script src="/js/gallery.js"></script>
+    <script th:inline="javascript">
+        let newgalbtn = document.querySelector("#newgalbtn");
+        let rmvgalbtn = document.querySelector("#rmvgalbtn");
+        let lstgalbtn = document.querySelector("#lstgalbtn");
+
+        // 질의문자열에서 gno를 자바스크립트 코드에 삽입
+        const gno = [[${gno}]];
+
+        newgalbtn?.addEventListener('click', (e) => {
+            location.href = `/gallery/write`;
+        });
+        rmvgalbtn.addEventListener('click', (e) => {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                location.href = `/gallery/remove/${gno}`;
+            }
+        });
+        lstgalbtn.addEventListener('click', (e) => {
+            location.href = `/gallery/list`;
+        });
+
+    </script>
+</th:block>Add commentMore actions
+
+</html>

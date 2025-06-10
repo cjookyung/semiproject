@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 "/api/v1/member/join",      // API 회원가입
                                 "/api/v1/jwt/auth",         // JWT 인증 관련 엔드포인트
                                 "/member/**",               // 모든 /member 경로
+                                "/gallery/**",
                                 "/",                        // 메인 페이지
                                 "/css/*", "/js/*", "/images/**" // 정적 리소스
                         ).permitAll()
