@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.semiproject.gallery.domain.Gallery;
 import org.example.semiproject.gallery.domain.GalleryImage;
+import org.example.semiproject.gallery.domain.dto.GalleryDTO;
 import org.example.semiproject.gallery.repository.GalleryImageRepository;
 import org.example.semiproject.gallery.repository.GalleryRepository;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,10 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
         return result;
+    }
+    @Override
+    public List<GalleryDTO> readGallery() {
+        return galleryMapper.selectGallery();
     }
 
 }
