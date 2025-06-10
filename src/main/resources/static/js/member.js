@@ -158,15 +158,17 @@ const submitLoginfrm = async (frm, token, headerName) => {
     // reCAPTCHA 토큰 추가
     formData.append('recaptchaToken', response);
 
-    //fetch('/api/v1/member/login', { //security에서는 필요 없음
-    fetch('/member/login', { //security에서 자동 처리
+   fetch('/api/v1/member/login', { //jwt에서는 다시 사용
         method: 'POST',
         body: formData
     }).then(async response => {
         if (response.ok) { // 로그인이 성공했다면
-            // alert(await response.text()); //security에서는 필요 없음
-            // location.href = '/member/myinfo';
-            alert('로그인에 성공하였습니다');
+            let data = await response.json();
+            console.log(data.token);
+            alert(data.message); // 로그인 성공 메세지
+            sessionStorage.setItem('jwt', data.token); // jwt 토큰 저장
+
+
             location.href = '/member/myinfo';
         } else if (response.status === 400) {
             alert(await response.text());
@@ -177,4 +179,58 @@ const submitLoginfrm = async (frm, token, headerName) => {
         console.error('login error:', error);
         alert('서버와 통신중 오류가 발생했습니다!! 관리자에게 문의하세요!');
     });
-} // submitLoginFrm
+} // submitLoginFrm4
+
+// 토큰을 이용한 나의 정보 출력
+const showMyinfo = async () => {
+
+    let jwt = sessionStorage.getItem('jwt');
+    console.log('jwt : ', jwt);
+
+    fetch('/api/v1/jwt/auth', { // jwt에서는 다시 사용
+        method: 'GET',
+        headers: {Authorization: `Bearer ${jwt}`}
+    }).then(async response => {
+        if (response.ok) { // 로그인이 성공했다면
+            let isAuthed = await response.text();
+            if (isAuthed === 'true') {
+                console.log('isAuthed : ', isAuthed); // "로그인 성공했습니다!!"
+                fetchMyinfo();
+            } else
+                location.href = '/member/login';
+        } else {
+            alert('토큰 인증에 실패했습니다!! 다시 시도해 주세요!');
+        }
+    }).catch(error => {
+        console.error('login error:', error);
+        alert('서버와 통신중 오류가 발생했습니다!! 관리자에게 문의하세요!');
+    });
+
+} // showMyinfo
+
+const fetchMyinfo = async () => {
+
+    let jwt = sessionStorage.getItem('jwt');
+
+    fetch('/api/v1/jwt/fetchMyinfo', {
+        method: 'GET',
+        headers: {Authorization: `Bearer ${jwt}`}
+    }).then(async response => {
+        if (response.ok) { // 로그인이 성공했다면
+            let data = JSON.parse(await response.text());
+            console.log(data); // "로그인 성공했습니다!!"
+            document.querySelector('#userid').innerHTML = data.userid;
+            document.querySelector('#name').innerHTML = data.name;
+            document.querySelector('#email').innerHTML = data.email;
+            let date = data.regdate.replace('T', ' ');
+            date = date.substring(0, 19);
+            document.querySelector('#regdate').innerHTML = date;
+        } else {
+            alert('토큰 인증에 실패했습니다!! 다시 시도해 주세요!');
+        }
+    }).catch(error => {
+        console.error('login error:', error);
+        alert('서버와 통신중 오류가 발생했습니다!! 관리자에게 문의하세요!');
+    });
+
+} // showMyinfo

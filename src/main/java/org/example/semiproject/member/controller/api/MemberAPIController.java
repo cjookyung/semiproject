@@ -3,6 +3,7 @@ package org.example.semiproject.member.controller.api;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.semiproject.common.jwt.JwtUtil;
 import org.example.semiproject.common.utils.GoogleRecaptchaService;
 import org.example.semiproject.member.domain.Member;
 import org.example.semiproject.member.domain.dto.LoginDTO;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class MemberAPIController {
 
     private final MemberService memberService;
     private final GoogleRecaptchaService googleRecaptchaService;
+    private final JwtUtil jwtUtil;
 
     // ResponseEntity는 스프링에서 HTTP와 관련된 기능을 구현할때 사용
     // 상태코드, HTTP헤더, HTTP본문등을 명시적으로 설정 가능
@@ -69,10 +73,13 @@ public class MemberAPIController {
 
             // 정상 처리시 상태코드 200으로 응답
             Member loginUser = memberService.loginMember(member);
-            session.setAttribute("loginUser", loginUser);
-            session.setMaxInactiveInterval(600);  // 세션 유지 : 10분
 
-            response = ResponseEntity.ok().body("로그인 성공했습니다!!");
+            // JWT 토큰 발급
+            String jwt = jwtUtil.generateToken(loginUser.getUserid());
+            log.info("jwt: {}", jwt);  // 세션 유지 : 10분
+
+            //response = ResponseEntity.ok().body("로그인 성공했습니다!!");
+            response = ResponseEntity.ok().body(Map.of("token", jwt, "message", "로그인 성공했습니다!!"));
         } catch (IllegalStateException e) {
             // 비정상 처리시 상태코드 400으로 응답 - 클라이언트 잘못
             // 아이디나 비밀번호 잘못 입력시

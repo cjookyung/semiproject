@@ -1,6 +1,7 @@
 package org.example.semiproject.member.serivce;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.semiproject.member.domain.Member;
 import org.example.semiproject.member.domain.dto.LoginDTO;
 import org.example.semiproject.member.domain.dto.MemberDTO;
@@ -8,6 +9,7 @@ import org.example.semiproject.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -38,7 +40,9 @@ public class MemberServiceImpl implements MemberService {
     public Member loginMember(LoginDTO member) {
         Member findMember = memberMapper.findByUserid(member.getUserid());
 
-        if (findMember == null || !findMember.getPasswd().equals(member.getPasswd())) {
+        log.info("비교용 사용자 암호: {}", findMember.getPasswd());
+        log.info("입력한 사용자 암호: {}", member.getPasswd());
+        if (findMember == null || !passwordEncoder.matches(member.getPasswd(), findMember.getPasswd())) {
             throw new IllegalStateException("아이디나 비밀번호가 일치하지 않습니다!!");
         }
 

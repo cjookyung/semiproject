@@ -20,24 +20,33 @@
                 <tbody>
                 <tr>
                     <td>아이디</td>
-                    <td><span th:text="${loginUser.userid}">abc123</span></td>
+                    <td><span id="userid">-</span></td>
                 </tr>
                 <tr>
                     <td>이름</td>
-                    <td><span th:text="${loginUser.name}">987xyz</span></td>
+                    <td><span id="name">-</span></td>
                 </tr>
                 <tr>
                     <td>이메일</td>
-                    <td><span th:text="${loginUser.email}">abc123@abc123.co.kr</span></td>
+                    <td><span id="email">-</span></td>
                 </tr>
                 <tr>
                     <td>가입일</td>
-                    <td><span th:text="${#temporals.format(loginUser.regdate, 'yyyy-MM-dd HH:mm:ss')}">2023-12-25 12:25:00</span></td>
+                    <td><span id="regdate">-</span></td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </main>
 </th:block>
+<th:block layout:fragment="script">
+    <script src="/js/member.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            showMyinfo();
+        });
+    </script>
+</th:block>
+
 
 </html>
