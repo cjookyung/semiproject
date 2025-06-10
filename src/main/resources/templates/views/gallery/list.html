@@ -73,5 +73,13 @@
 
   </main>
 </th:block>
+<th:block layout:fragment="script">
+  <script>
+    const newgalbtn = document.querySelector('#newgalbtn');
+    newgalbtn.addEventListener('click', () => {
+      location.href = '/gallery/write';
+    });
+  </script>
+</th:block>
 
 </html>

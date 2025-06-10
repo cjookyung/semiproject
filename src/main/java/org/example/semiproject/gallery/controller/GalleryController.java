@@ -27,4 +27,10 @@ public class GalleryController {
         return "views/gallery/view";
     }
 
+    @GetMapping("/write")
+    public String write(Model model) {
+        model.addAttribute("sitekey", sitekey);
+
+        return "views/gallery/write";
+    }
 }

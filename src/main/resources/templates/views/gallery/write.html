@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<head><!-- layout.html의 head - styles 태그에 자동 삽입 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 0.95em;
+            margin: 10px 0;
+            /*display: none;*/
+        }
+        #galleryfrm {
+            max-width: 750px;
+            margin: 100px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<th:block layout:fragment="content">
+    <main id="content">
+        <h2>이미지 갤러리 글쓰기</h2>
+        <form name="galleryfrm" id="galleryfrm" method="post" novalidate>
+
+            <div class="form-floating my-2">
+                <input type="text" name="userid" id="userid" class="form-control"
+                       placeholder="아이디" readonly value="abc123">
+                <label for="userid" class="form-label">아이디</label>
+            </div>
+
+            <div class="form-floating my-2">
+                <input type="text" name="title" id="title" class="form-control"
+                       placeholder="제목" required>
+                <label for="title" class="form-label">제목</label>
+            </div>
+
+            <div class="form-floating my-2">
+                <textarea name="contents" id="contents" class="form-control h-100"
+                          rows="10" placeholder="본문글" required></textarea>
+                <label for="contents" class="form-label">본문글</label>
+            </div>
+
+            <div class="">
+                <input type="file" name="ginames" id="ginames" class="form-control"
+                       placeholder="이미지첨부" multiple required>
+            </div>
+
+            <div class="my-2 d-flex justify-content-center">
+                <div class="g-recaptcha" id="recaptcha" th:data-sitekey="${sitekey}"></div>
+            </div>
+
+            <div class="my-2 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-sharp fa-solid fa-file-signature"></i> 입력완료</button>
+                <button type="reset" class="btn btn-danger">
+                    <i class="fa-sharp fa-solid fa-eraser"></i> 다시입력</button>
+            </div>
+
+            <input type="hidden" name="simgname" id="simgname">
+        </form>
+    </main>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script src="/js/gallery.js"></script>
+    <script>
+        const galleryfrm = document.querySelector('#galleryfrm');
+
+        galleryfrm.addEventListener("submit", (e) => {
+            e.preventDefault(); // submit 버튼 기능 중지
+
+            clearErrorMessages();  // 에러메세지 초기화
+
+            // 입력 요소 유효성 검사
+            let isValid = validGallery(galleryfrm);
+
+            // 첨부한 이미지들 중에서 첫번째 이미지파일의 이름 추출
+            // cowmeat01.jpg => cowmeat01_small.jpg
+            // cowmeat01.blabla.jpg => cowmeat01.blabla_small.jpg
+            const ginames = document.querySelector('#ginames');
+            const simgname = document.querySelector('#simgname');
+            const fname = ginames.files[0].name.split('.');
+            const tfname = `${fname[0]}_small.${fname[1]}`;
+            //alert(fname + '/' + tfname);
+            simgname.value = tfname; // 생성한 썸네일파일명을 hidden 요소에 삽입
+
+            if (isValid) submitGalleryfrm(galleryfrm);
+        });
+    </script>
+</th:block>
+</html>
