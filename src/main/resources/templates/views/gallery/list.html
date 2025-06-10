@@ -54,18 +54,19 @@
     <div class="row justify-content-center mb-4">
 
       <div class="col-10 card" style="width: 18rem"
-           th:each="i : ${#numbers.sequence(1, 24) }">
-        <a href="/gallery/view/1">
-          <img src="/images/cowmeat_small.jpg"
+           th:each="gal : ${gals}">
+        <a th:href="|/gallery/view/${gal.ggno}|">
+          <img th:src="|http://localhost/cdn/_small/${gal.simgname}|"
                class="card-img-top" alt="..."></a>
 
         <div class="card-body">
-          <h5 class="card-title">갤러리 제목</h5>
-          <p><span>작성자</span>
-            <span style="float: right">2023-07-20</span></p>
-          <p><span><i class="fa-regular fa-thumbs-up"></i>999</span>
+          <h5 class="card-title" th:text="${gal.title}">갤러리 제목</h5>
+          <p><span th:text="${gal.userid}">작성자</span>
+            <span style="float: right" th:text="${#strings.substring(gal.regdate,0,10)}">
+	    2023-07-20</span></p>
+          <p><span><i class="fa-regular fa-thumbs-up"></i> [[${gal.thumbs}]]</span>
             <span style="float: right">
-                       <i class="fa-regular fa-eye"></i>123</span></p>
+                  <i class="fa-regular fa-eye"></i> [[${gal.views}]]</span></p>
         </div>
       </div>
 
